@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oxm="http://www.springframework.org/schema/oxm"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/oxm
+    http://www.springframework.org/schema/oxm/spring-oxm.xsd">
+
+	<bean id="printer" class="org.edward.javastudy.spring.ioc.MessagePrinter">
+		<property name="names">
+			<set>
+				<value>n1</value>
+				<value>n2</value>
+				<value>n3</value>
+			</set>
+		</property>
+		<property name="service" ref="a1"></property>
+	</bean>
+	<bean id="a1" class="org.edward.javastudy.spring.ioc.MessageServiceImpl">
+	</bean>
+
+
+</beans>

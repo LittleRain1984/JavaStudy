@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oxm="http://www.springframework.org/schema/oxm"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/oxm
+    http://www.springframework.org/schema/oxm/spring-oxm.xsd">
+
+	<bean id="stage" class="org.edward.javastudy.spring.inject.Stage">
+		<property name="playerList">
+			<list>
+				<ref bean="bikePlayer" />
+				<ref bean="motoPlayer" />
+			</list>
+		</property>
+		<property name="mainPlayer">
+			<bean class="org.edward.javastudy.spring.inject.BikePlayer">
+				<property name="name" value="inner Player"></property>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="stage2" class="org.edward.javastudy.spring.inject.Stage">
+		<property name="mainPlayer" ref="bikePlayer2"></property>
+		<lookup-method bean="bikePlayer2" name="lookupMethod" />
+	</bean>
+
+
+	<bean id="bikePlayer" class="org.edward.javastudy.spring.inject.BikePlayer"
+		scope="prototype">
+		<property name="name" value="Michael"></property>
+	</bean>
+
+	<bean id="bikePlayer2" class="org.edward.javastudy.spring.inject.BikePlayer"
+		scope="prototype">
+		<property name="name" value="Michael2"></property>
+	</bean>
+
+	<bean id="motoPlayer" class="org.edward.javastudy.spring.inject.MotoPlayer"
+		scope="prototype" />
+</beans>
