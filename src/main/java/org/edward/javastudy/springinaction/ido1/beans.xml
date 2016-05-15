@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding = "UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
+
+    <!--Bean Definition-->
+    <bean id="duke" class="org.edward.javastudy.springinaction.ido1.Juggler">
+        <constructor-arg value="15"></constructor-arg>
+    </bean>
+
+    <bean id="happyBirthdayPoem" class="org.edward.javastudy.springinaction.ido1.HappyBirthDayPoem">
+    </bean>
+
+    <bean id="stage" class="org.edward.javastudy.springinaction.ido1.Stage" factory-method="getInstance"></bean>
+
+    <bean id="poeticDuke" class="org.edward.javastudy.springinaction.ido1.PoeticJuggler">
+        <constructor-arg value="15"></constructor-arg>
+        <constructor-arg ref="happyBirthdayPoem"></constructor-arg>
+    </bean>
+
+    <bean id="saxophone" class="org.edward.javastudy.springinaction.ido1.Saxophone"/>
+
+    <bean id="kenny" class="org.edward.javastudy.springinaction.ido1.Instrumentalist">
+        <property name="song" value="Happy Birthday!"/>
+        <property name="age" value="30" />
+        <property name="instrument" ref="saxophone"/>
+    </bean>
+
+    <bean id="kenny2" class="org.edward.javastudy.springinaction.ido1.Instrumentalist">
+        <property name="song" value="Happy Birthday２"/>
+        <property name="age" value="30" />
+        <property name="instrument" ref="saxophone"/>
+    </bean>
+
+
+</beans>
