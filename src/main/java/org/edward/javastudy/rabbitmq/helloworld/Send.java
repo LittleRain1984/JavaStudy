@@ -1,4 +1,4 @@
-package org.edward.javastudy.mq.helloworld;
+package org.edward.javastudy.rabbitmq.helloworld;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;

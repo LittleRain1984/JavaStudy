@@ -1,4 +1,4 @@
-package org.edward.javastudy.mq.workqueue;
+package org.edward.javastudy.rabbitmq.workqueues.v1;
 
 import com.rabbitmq.client.*;
 
@@ -14,7 +14,7 @@ public class Worker {
 		final Connection connection = factory.newConnection();
 		final Channel channel = connection.createChannel();
 
-		channel.queueDeclare(TASK_QUEUE_NAME, false, false, false, null);
+		channel.queueDeclare("hello", false, false, false, null);
 		System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
 
 		channel.basicQos(1);
@@ -28,25 +28,20 @@ public class Worker {
 				System.out.println(" [x] Received '" + message + "'");
 				try {
 					doWork(message);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				} finally {
 					System.out.println(" [x] Done");
-					channel.basicAck(envelope.getDeliveryTag(), false);
 				}
 			}
 		};
-		channel.basicConsume(TASK_QUEUE_NAME, false, consumer);
+		channel.basicConsume(TASK_QUEUE_NAME, true, consumer);
 	}
 
-	private static void doWork(String task) {
+	private static void doWork(String task) throws InterruptedException {
 		for (char ch : task.toCharArray()) {
-			if (ch == '.') {
-				try {
-					System.out.println("Sleeping.");
-					Thread.sleep(1000);
-				} catch (InterruptedException _ignored) {
-					Thread.currentThread().interrupt();
-				}
-			}
+			if (ch == '.')
+				Thread.sleep(1000);
 		}
 	}
 }
