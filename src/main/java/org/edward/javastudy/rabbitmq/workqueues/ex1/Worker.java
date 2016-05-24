@@ -30,7 +30,13 @@ public class Worker {
                     doWork(message);
                 } finally {
                     System.out.println(" [x] Done");
-                    channel.basicAck(envelope.getDeliveryTag(), false);
+                    // There are 3 things that we need to specify to ensure the
+                    // message would be removed from the queue only if the
+                    // consumer has consumed successfully
+                    // 1. channel.basicQos(1); // receive on message from queue one time.
+                    // 2. channel.basicAck(envelope.getDeliveryTag(), false);
+                    // 3.channel.basicConsume(TASK_QUEUE_NAME, false, consumer);  //autoAck is false
+                    channel.basicAck(envelope.getDeliveryTag(), false); //
                 }
             }
         };
