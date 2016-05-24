@@ -17,6 +17,8 @@ public class BraveKnightTest {
         BraveKnight knight =  new BraveKnight(mockQuest);
         knight.enbarkOnQuest();
 
+        knight.enbarkOnQuest();
+
         Mockito.verify(mockQuest, times(2)).embark();
     }
 
