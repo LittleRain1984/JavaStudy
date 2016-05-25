@@ -1,32 +1,42 @@
-package org.edward.javastudy.rabbitmq.workqueues.ex1;
+package org.edward.javastudy.rabbitmq.workqueues.durability;
 
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.MessageProperties;
 
-public class NewTask {
+public class QOSNewTask {
 
-    public static final String TASK_QUEUE_NAME = "work_queues_ex1";
+    private static final String TASK_QUEUE_NAME = "work_queues_qos";
 
     public static void main(String[] argv) throws Exception {
         for (int i = 0; i < 5; i++) {
-            String dots = ".";
-            for (int j = 0; j < i; j++) {
+            String dots = "..";
+            for (int j = 0; j < i % 5; j++) {
                 dots = dots + ".";
             }
-            argv = new String[] { i + " - Hello " + dots };
+            String message = i + "- HelloWorld " + dots;
+
             ConnectionFactory factory = new ConnectionFactory();
             factory.setHost("localhost");
             Connection connection = factory.newConnection();
             Channel channel = connection.createChannel();
 
-            channel.queueDeclare(TASK_QUEUE_NAME, false, false, false, null);
+            // ueue.DeclareOk queueDeclare(String queue, boolean durable,
+            // boolean
+            // exclusive, boolean autoDelete,
+            // Map<String, Object> arguments) throws IOException;
+            boolean durable = true;
+            channel.queueDeclare(TASK_QUEUE_NAME, durable, false, false, null);
 
-            String message = getMessage(argv);
-
-            channel.basicPublish("", TASK_QUEUE_NAME, MessageProperties.PERSISTENT_TEXT_PLAIN,
-                    message.getBytes("UTF-8"));
+            // Whether the message need to be saved when mq server is
+            // shutting
+            // down
+            // is depends on the BasicProperties that you set on the
+            // message. if
+            // it
+            // is null, do not save, otherwise save.
+            channel.basicPublish("", TASK_QUEUE_NAME, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes());
             System.out.println(" [x] Sent '" + message + "'");
 
             channel.close();

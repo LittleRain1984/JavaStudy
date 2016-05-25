@@ -1,12 +1,13 @@
-package org.edward.javastudy.rabbitmq.workqueues.v1;
+package org.edward.javastudy.rabbitmq.workqueues.durability;
 
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.MessageProperties;
 
 public class NewTask {
 
-    private static final String TASK_QUEUE_NAME = "task_queue_v1";
+    private static final String TASK_QUEUE_NAME = "work_queues_manageack";
 
     public static void main(String[] argv) throws Exception {
         String message = getMessage(argv);
@@ -15,10 +16,21 @@ public class NewTask {
         factory.setHost("localhost");
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
-        channel.queueDeclare("hello", false, false, false, null);
 
-        channel.basicPublish("", "hello", null, message.getBytes());
+        // ueue.DeclareOk queueDeclare(String queue, boolean durable, boolean
+        // exclusive, boolean autoDelete,
+        // Map<String, Object> arguments) throws IOException;
+        boolean durable = true;
+        channel.queueDeclare(TASK_QUEUE_NAME, durable, false, false, null);
+
+        // Whether the message need to be saved when mq server is shutting down
+        // is depends on the BasicProperties that you set on the message. if it
+        // is null, do not save, otherwise save.
+        channel.basicPublish("", TASK_QUEUE_NAME, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes());
         System.out.println(" [x] Sent '" + message + "'");
+
+        channel.close();
+        connection.close();
     }
 
     private static String getMessage(String[] strings) {

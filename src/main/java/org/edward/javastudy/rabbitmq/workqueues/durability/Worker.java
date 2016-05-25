@@ -1,4 +1,4 @@
-package org.edward.javastudy.rabbitmq.workqueues.ex1;
+package org.edward.javastudy.rabbitmq.workqueues.durability;
 
 import com.rabbitmq.client.*;
 
@@ -6,15 +6,17 @@ import java.io.IOException;
 
 public class Worker {
 
-    private static final String TASK_QUEUE_NAME = "work_queues_ex1";
+    private static final String TASK_QUEUE_NAME = "work_queues_manageack";
 
     public static void main(String[] argv) throws Exception {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("localhost");
         final Connection connection = factory.newConnection();
         final Channel channel = connection.createChannel();
-
-        channel.queueDeclare(TASK_QUEUE_NAME, false, false, false, null);
+        
+        
+        boolean durable = true; 
+        channel.queueDeclare(TASK_QUEUE_NAME, durable, false, false, null);
         System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
 
         channel.basicQos(1);
@@ -28,31 +30,31 @@ public class Worker {
                 System.out.println(" [x] Received '" + message + "'");
                 try {
                     doWork(message);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
                 } finally {
                     System.out.println(" [x] Done");
-                    // There are 3 things that we need to specify to ensure the
-                    // message would be removed from the queue only if the
-                    // consumer has consumed successfully
-                    // 1. channel.basicQos(1); // receive on message from queue one time.
-                    // 2. channel.basicAck(envelope.getDeliveryTag(), false);
-                    // 3.channel.basicConsume(TASK_QUEUE_NAME, false, consumer);  //autoAck is false
-                    channel.basicAck(envelope.getDeliveryTag(), false); //
+                    channel.basicAck(envelope.getDeliveryTag(), false);
                 }
             }
         };
-        channel.basicConsume(TASK_QUEUE_NAME, false, consumer);
+
+        // It is very important to set the autoAck to false to make the
+        // acknowledge must be returned the explicit code
+        // String basicConsume(String queue, boolean autoAck, Consumer callback)
+        // throws IOException;
+        System.out.println(channel.basicConsume(TASK_QUEUE_NAME, false, consumer));
+
     }
 
-    private static void doWork(String task) {
+    private static void doWork(String task) throws InterruptedException {
         for (char ch : task.toCharArray()) {
             if (ch == '.') {
-                try {
-                    System.out.println("Sleeping.");
-                    Thread.sleep(1000);
-                } catch (InterruptedException _ignored) {
-                    Thread.currentThread().interrupt();
-                }
+                System.out.println("Sleeping......");
+                Thread.sleep(1000);
             }
+
         }
     }
 }
