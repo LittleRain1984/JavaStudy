@@ -1,4 +1,4 @@
-package org.edward.javastudy.rabbitmq.workqueues.manageack;
+package org.edward.javastudy.rabbitmq.workqueues.acknowledgment;
 
 import com.rabbitmq.client.*;
 
@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public class Worker {
 
-    private static final String TASK_QUEUE_NAME = "work_queues_manageack";
+    private static final String TASK_QUEUE_NAME = "work_queues_acknowledgment";
 
     public static void main(String[] argv) throws Exception {
         ConnectionFactory factory = new ConnectionFactory();
@@ -15,7 +15,8 @@ public class Worker {
         final Channel channel = connection.createChannel();
 
         channel.queueDeclare(TASK_QUEUE_NAME, false, false, false, null);
-        System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
+        System.out.println(
+                " [*] Waiting for messages. To exit press CTRL+C" + "    " + Worker.class.getPackage().getName());
 
         channel.basicQos(1);
 
@@ -33,7 +34,7 @@ public class Worker {
                     e.printStackTrace();
                 } finally {
                     System.out.println(" [x] Done");
-                    channel.basicAck(envelope.getDeliveryTag(), false);
+                    //channel.basicAck(envelope.getDeliveryTag(), false);
                 }
             }
         };
@@ -42,7 +43,8 @@ public class Worker {
         // acknowledge must be returned the explicit code
         // String basicConsume(String queue, boolean autoAck, Consumer callback)
         // throws IOException;
-        System.out.println(channel.basicConsume(TASK_QUEUE_NAME, false, consumer));
+        boolean autoAck = true;
+        System.out.println(channel.basicConsume(TASK_QUEUE_NAME, autoAck, consumer));
 
     }
 

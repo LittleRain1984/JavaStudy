@@ -20,7 +20,7 @@ public class NewTask {
         // ueue.DeclareOk queueDeclare(String queue, boolean durable, boolean
         // exclusive, boolean autoDelete,
         // Map<String, Object> arguments) throws IOException;
-        boolean durable = true;
+        boolean durable = false;
         channel.queueDeclare(TASK_QUEUE_NAME, durable, false, false, null);
 
         // Whether the message need to be saved when mq server is shutting down
@@ -35,7 +35,7 @@ public class NewTask {
 
     private static String getMessage(String[] strings) {
         if (strings.length < 1)
-            return "Hello World!";
+            return "Hello World!....";
         return joinStrings(strings, " ");
     }
 

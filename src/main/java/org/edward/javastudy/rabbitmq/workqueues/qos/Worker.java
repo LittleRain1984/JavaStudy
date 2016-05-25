@@ -1,10 +1,10 @@
-package org.edward.javastudy.rabbitmq.workqueues.durability;
+package org.edward.javastudy.rabbitmq.workqueues.qos;
 
 import com.rabbitmq.client.*;
 
 import java.io.IOException;
 
-public class QOSWorker {
+public class Worker {
 
     private static final String TASK_QUEUE_NAME = "work_queues_qos";
 
@@ -19,7 +19,7 @@ public class QOSWorker {
         channel.queueDeclare(TASK_QUEUE_NAME, durable, false, false, null);
         System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
 
-        channel.basicQos(2);
+        channel.basicQos(1);
 
         final Consumer consumer = new DefaultConsumer(channel) {
             @Override
@@ -41,7 +41,7 @@ public class QOSWorker {
         };
 
         // It is very important to set the autoAck to false to make the
-        // acknowledge must be returned the explicit code
+        // acknowledge must be returned by explicit code
         // String basicConsume(String queue, boolean autoAck, Consumer callback)
         // throws IOException;
         System.out.println(channel.basicConsume(TASK_QUEUE_NAME, false, consumer));
@@ -52,7 +52,7 @@ public class QOSWorker {
         for (char ch : task.toCharArray()) {
             if (ch == '.') {
                 System.out.println("Sleeping......");
-                Thread.sleep(1000);
+                Thread.sleep(3000);
             }
 
         }

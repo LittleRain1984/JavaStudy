@@ -15,7 +15,7 @@ public class Worker {
         final Channel channel = connection.createChannel();
         
         
-        boolean durable = true; 
+        boolean durable = false; 
         channel.queueDeclare(TASK_QUEUE_NAME, durable, false, false, null);
         System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
 
@@ -41,7 +41,7 @@ public class Worker {
         };
 
         // It is very important to set the autoAck to false to make the
-        // acknowledge must be returned the explicit code
+        // acknowledge must be returned by explicit code
         // String basicConsume(String queue, boolean autoAck, Consumer callback)
         // throws IOException;
         System.out.println(channel.basicConsume(TASK_QUEUE_NAME, false, consumer));

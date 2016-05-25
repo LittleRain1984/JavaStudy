@@ -13,3 +13,22 @@ java -cp .:commons-io-2.4.jar:commons-cli-1.2.jar:amqp-client-2.5.0.jar org.edwa
 
 #start server
 sudo nohup rabbitmq-server start &
+
+
+#RabbitMQ Notes
+durable: 
+boolean durable = true;//indicate whether the queue is durable at both producer and consumer side
+channel.queueDeclare(TASK_QUEUE_NAME, durable, false, false, null);
+
+
+acknowledge: 
+in the consumer:
+boolean autoAck = false;
+channel.basicConsume(TASK_QUEUE_NAME, autoAck, consumer)//if the autoAck is set to true, the consumer would send back the ** acknowledge immediately once it received the message
+channel.basicAck(envelope.getDeliveryTag(), false);//send back the acknowledge manually by code
+
+Qos:
+producer:
+channel.basicPublish("", TASK_QUEUE_NAME, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes());
+consumer:
+channel.basicQos(1);
