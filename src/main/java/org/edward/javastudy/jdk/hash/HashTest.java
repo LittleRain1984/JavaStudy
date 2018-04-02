@@ -1,15 +1,43 @@
 package org.edward.javastudy.jdk.hash;
 
-/**
- * Created by edwardzhu on 4/23/17.
- */
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 public class HashTest {
-    public static void main(String[] args){
-        String a = "hello";
-        String b = "I am Batman.";
 
-        System.out.println(a.hashCode());
-        System.out.println(b.hashCode());
+    public static void main(String[] args) {
+        Map h = new HashMap();
+        Map h2 = Collections.synchronizedMap(h);
 
+
+        int total = 20;
+        int index =0;
+        while(index <total){
+            Animal a = new Animal(index);
+            h.put(a,a);
+            index++;
+        }
+
+        System.out.println("1===>" + (1>>>1));
+        System.out.println("3===>" + (3>>>1));
+        System.out.println("7===>" + (7>>>1));
+        System.out.println("15===>" + (15>>>1));
     }
+}
+
+
+class Animal {
+
+    int age;
+
+    Animal(int age){
+        this.age = age;
+    }
+
+    @Override
+    public int hashCode() {
+        return age%3;
+    }
+
 }
