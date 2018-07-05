@@ -16,5 +16,7 @@ public class ArrayListTest {
         for(String s: dstArray) {
             System.out.print(s);
         }
+
+
     }
 }

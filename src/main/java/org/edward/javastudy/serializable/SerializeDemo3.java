@@ -1,21 +1,34 @@
-package org.edward.javastudy.jvm;
+package org.edward.javastudy.serializable;
 
 import java.io.*;
 
-public class SerializeDemo {
+/**
+ * # If the object serialVersionUID is different between the marshall/unmarshall, exception
+ * java.io.InvalidClassException: org.edward.javastudy.serializable.Employee3;
+ * local class incompatible: stream classdesc serialVersionUID = 1, local class serialVersionUID = 2
+ * #* write with serialVersionUID 1L
+ * #* read with serialVersionUID 2L
+ * #*
+ */
+public class SerializeDemo3 {
     public static void main(String[] args) {
-        SerializeDemo sd = new SerializeDemo();
+        SerializeDemo1 sd = new SerializeDemo1();
 
-        Employee e = new Employee();
+        Employee3 e = new Employee3();
         e.name = "Reyan Ali";
         e.address = "Phokka Kuan, Ambehta Peer";
-        e.SSN = 11122333;
         e.number = 101;
-        e.gender = "Female";
+        e.gender = "Female1";
 
-        String filePath = "/Users/edwardzhu/temp/employee.ser";
-        sd.marshallToFile(filePath, e);
+        String filePath = "src/main/java/org/edward/javastudy/serializable/employee2.ser";
+        File file = new File(filePath);
+        System.out.println("Try to serial the object to path:" + file.getAbsolutePath());
 
+        //1st write
+        // sd.marshallToFile(filePath, e);
+
+
+        //2st write
         sd.unMarshallFromFile(filePath);
     }
 
@@ -38,7 +51,7 @@ public class SerializeDemo {
         try {
             FileInputStream fileIn = new FileInputStream(path);
             ObjectInputStream in = new ObjectInputStream(fileIn);
-            Employee e = (Employee) in.readObject();
+            Employee3 e = (Employee3) in.readObject();
             System.out.println(e);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -51,18 +64,20 @@ public class SerializeDemo {
     }
 }
 
-class Employee implements Serializable {
+class Employee3 implements Serializable {
 
-    private final static long serialVersionUID = 123456789L;
+    //1st write
+//     private final static long serialVersionUID = 1L;
 
+    //2nd read
+    private final static long serialVersionUID = 2L;
     String name;
     String address;
-    int SSN;
     int number;
-    String comment = "no comment.";
     String gender = "netual";
 
     public String toString() {
-        return "name:" + name + "  address:" + address + " SSN:" + SSN + " number:" + number + " comment:" + comment + " gender: " + gender;
+        return "name:" + name + "  address:" + address + " number:" + number + " gender: " + gender;
     }
 }
+
